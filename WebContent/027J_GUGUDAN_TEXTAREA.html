@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<title>Document</title>
+		<script src="jquery-1.12.4.js"></script>
+		<script type="text/javascript">
+			function myclick() {
+// 				var obj = document.getElementById("mytextarea");
+// 				var gugu = document.getElementsByName("showgugu")[0];
+// 				var select = gugu.options[gugu.selectedIndex].value;
+				
+// 				obj.value = "";
+			
+// 				for(var i=1; i<=9; i++){
+// 					obj.value +=(select + "*" + i  + "=" + (select*i) +"\n");
+// 				}
+				
+				var gu = $("#showgugu").val();
+				var text = "";
+			
+				text += gu + "*1 = " +(gu*1)  + "\n";
+				text += gu + "*2 = " + (gu*2) + "\n";
+				text += gu + "*3 = " + (gu*3) + "\n";
+				text += gu + "*4 = " + (gu*4) + "\n";
+				text += gu + "*5 = " + (gu*5) + "\n";
+				text += gu + "*6 = " + (gu*6) + "\n";
+				text += gu + "*7 = " + (gu*7) + "\n";
+				text += gu + "*8 = " + (gu*8) + "\n";
+				text += gu + "*9 = " + (gu*9) + "\n";
+				
+				$("#mytextarea").val(text);
+			}
+			$(document).ready(function(){
+				$("#my_btn").on("click",function(){
+					myclick();
+				});
+				$("#showgugu").on("change",function(){
+					myclick();
+				});
+			});
+		</script>		
+	</head>
+	<body>
+	<table border ="1">
+		<tr>
+			<td>
+				<select id="showgugu" >
+					<option value="2">2단</option>
+					<option value="3">3단</option>
+					<option value="4">4단</option>
+					<option value="5">5단</option>
+					<option value="6">6단</option>
+					<option value="7">7단</option>
+					<option value="8">8단</option>
+					<option value="9">9단</option>
+				</select>
+			</td>
+			<td>
+				<input type="button" id="my_btn" value="클릭" >		
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2">
+				<textarea id = "mytextarea" rows="10" cols="11"></textarea>
+		
+		
+			</td>
+		</tr>
+	</table>
+				
+	</body>
+</html>

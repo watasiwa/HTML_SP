@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<title>Document</title>
+		<style type="text/css">
+			#input_c{
+				width: 30px;
+			}
+			#btn{
+				width: 139px;
+			}
+		</style>
+		<script type="text/javascript">
+			function myclick() {
+				var objA = document.getElementById("select_a")
+				var objB = document.getElementById("select_b")
+				
+				var a = objA.options[objA.selectedIndex].value;
+				var b = objA.options[objB.selectedIndex].value;
+				
+				var c = Number(a) * Number(b);
+				var objC = document.getElementById("input_c")
+				
+				objC.value = c;
+				
+				
+			}			
+		</script>		
+	</head>
+	<body>
+		<select id="select_a">
+			<option value="1">1</option>
+			<option value="2">2</option>
+			<option value="3">3</option>
+			<option value="4">4</option>
+			<option value="5">5</option>
+			<option value="6">6</option>
+			<option value="7">7</option>
+			<option value="8">8</option>
+			<option value="9">9</option>
+		</select>
+		*
+		<select id = "select_b">
+			<option value="1">1</option>
+			<option value="2">2</option>
+			<option value="3">3</option>
+			<option value="4">4</option>
+			<option value="5">5</option>
+			<option value="6">6</option>
+			<option value="7">7</option>
+			<option value="8">8</option>
+			<option value="9">9</option>
+		</select>
+		*
+		<input type="text" id="input_c">
+		<br>
+		<input type="button" value="계산하기" id="btn" onclick="myclick()">
+			
+	</body>
+</html>

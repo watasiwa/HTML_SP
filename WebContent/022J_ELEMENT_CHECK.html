@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<title>Document</title>
+		<script src="jquery-1.12.4.js"></script>
+		<script type="text/javascript">
+			function myclick() {
+				
+// 				var arr = document.getElementsByName("china");
+// 				var str_china = "";
+// 				for(var i =0; i <arr.length; i++){
+// 					if(arr[i].checked){
+// 						str_china += arr[i].value;
+// 					}
+// 				}
+// 				alert(str_china);  //Ȯ���ϱ�
+				
+				var str_china = "";
+				$("input[name=china]:checked").each(function(){
+					str_china += $(this).val();
+				});
+				alert(str_china);
+				
+				var str_korea = "";
+				$("input[name=korea]:checked").each(function(){
+					str_korea += $(this).val();
+				});
+				alert(str_korea);
+				
+				
+				
+// 				var arr = document.getElementsByName("korea");
+// 				var str_korea = "";
+// 				for(var i =0; i < arr.length; i++){
+// 					if(arr[i].checked){
+// 						str_korea += arr[i].value;
+// 				}
+// 				alert(str_korea);
+// 			}
+		}		
+		</script>		
+	</head>
+	<body>
+		좋아하는 중국음식
+		<input name="china" type="checkbox" value="j">짜장면
+		<input name="china" type="checkbox" value="m" checked >짬뽕
+		<input name="china" type="checkbox" value="t">탕수육
+		<br>	
+		좋아하는 한국음식
+		<input name="korea" type="checkbox" value="k" checked >김치찌개
+		<input name="korea" type="checkbox" value="s" >삼겹살
+		<input name="korea" type="checkbox" value="d" >된장찌개
+		<input type="button" value="클릭" onclick="myclick()"/>			
+	</body>
+</html>

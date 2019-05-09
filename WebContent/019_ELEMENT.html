@@ -2,15 +2,17 @@
 <html lang="en">
 	<head>
 		<title>Document</title>
-		<script type="text/javascript">
-			alert("good");
-		</script>
+	
 	</head>
 	<body>
 		<form action="http://www.daum.net">
-			이름 : <input name ="myname" type="text"><br>
+			이름: <input id = "myname" name ="myname" type="text"><br>
 			<input type="submit">
+		
 		</form>
-			
+		
+		<script type="text/javascript">
+			alert(document.getElementById("myname"));
+		</script>	
 	 </body>
 </html>

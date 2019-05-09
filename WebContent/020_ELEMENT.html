@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<title>Document</title>
+		<script type="text/javascript">
+			function init() {
+				alert(document.getElementById("myname").type);
+			
+			}
+			function myclick() {
+				alert("good job");
+			}
+		</script>		
+	</head>
+	<body onload="init()">
+		<form action="http://www.daum.net">
+			이름 : <input id = "myname" name ="myname" type="text" value="홍길동"><br>
+			<input type="button" value="클릭" onclick ="myclick()">
+			<input type="submit">		
+		</form>		
+	 </body>
+</html>

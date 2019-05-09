@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+   <head>
+      <title>DIV</title>
+      <style type="text/css">
+      body {
+             background: black;
+      }
+      
+      
+      .div_word{
+         position: absolute; 
+         top: 0px; 
+         left: 0px; 
+         color: #17D4FE;
+          font-family: 맑은 고딕;
+      }
+      </style>
+      <script type="text/javascript">
+         var idx_time = 0;
+         var score = 0;
+         
+         function gamestart() {
+            var objscore = document.getElementById("div_score");
+            objscore.innerHTML = score;
+            
+            makeWord();
+            
+            idx_time = setInterval(onstep_down, 20);
+            
+            
+         }
+         
+         function makeWord() {
+           var objbody = document.getElementById("my_body");
+           
+           var arr_word = new Array();
+           arr_word.push("백제");
+           arr_word.push("고구려");
+           arr_word.push("신라");
+           arr_word.push("피라미드");
+           arr_word.push("동북아공정");
+           arr_word.push("안시성");
+           
+           for(var i=0; i<arr_word.length; i++){
+           var random = parseInt(Math.random()*500);
+           var random_y = parseInt(Math.random()*200)-500;
+           objbody.innerHTML += "<div class='div_word' style='top : "+random_y+"px; left : "+ random+"px;' >"+arr_word[i]+"</div>";
+        	   
+           }
+      		
+         }
+         
+         function onstep_down() {
+            var div_words = document.getElementsByClassName("div_word");
+            
+            for (var i = 0; i < div_words.length; i++) {
+               var str_top = div_words[i].style.top;
+               str_top = str_top.replace("px","");
+               var int_top = Number(str_top);
+               int_top += 1;
+               if (int_top >= 700) {
+                  alert("당신이 졌습니다.");
+                  clearInterval(idx_time);
+                  break;
+               }
+               
+               div_words[i].style.top = int_top + "px";
+            }
+         }
+         
+         
+         function fn_press(e) {
+            if (e.keyCode == 13) {
+               fn_compare();
+            }   
+         }
+         
+         function fn_compare() {
+            var div_words = document.getElementsByClassName("div_word");
+            var text_words = document.getElementById("my_text").value;
+   
+            for (var i = div_words.length - 1; i >= 0; i--) {
+               var str_text = div_words[i].innerHTML;
+               if (str_text == text_words) {
+                  div_words[i].remove();
+                  score++;
+                  var objscore = document.getElementById("div_score");
+                  objscore.innerHTML = score;
+                  
+                  if (score >= 4) {
+                     alert("당신이 이겼습니다.");
+                     clearInterval(idx_time);
+                  }
+                  break;
+               }
+            }
+            document.getElementById("my_text").value = "";
+         }
+         
+      </script>
+   </head>
+   <body id = "my_body">
+      <input id="my_text" type="text" onkeypress="fn_press(event)"/>
+      <a href="javascript:gamestart()">시작</a><br>
+      <span style="color: white;">현재 스코어 : </span>
+      <span id="div_score" style="color: white;"></span>
+      
+      
+     <!--  <div class="div_word" style="top : 50px; left : 0px;" >우리나라</div> -->
+      
+   </body>
+</html>

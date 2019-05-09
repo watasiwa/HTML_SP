@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+   <head>
+      <title>DIV</title>
+      <script src="jquery-1.12.4.js"></script>
+      <style type="text/css">
+      .div_word{
+         position: absolute; 
+         top: 0px; 
+         left: 0px; 
+         background-color: red;
+      }
+      </style>
+      <script type="text/javascript">
+         
+         var idx_time =0;
+         var score = 0;
+         function gamestart() {
+           idx_time =  setInterval(move , 25);
+            
+         }
+         
+         function move() {
+        //    var div_words = document.getElementsByClassName("div_word");
+          var div_words = $(".div_word");
+          
+          	
+            for (var i = 0; i < div_words.length; i++) {
+            			
+               var int_top = $(div_words[i]).offset().top;
+               int_top += 1;
+               
+               if(int_top > 500){
+            	   alert("캬캬캬컄캬 니가 졌다리..");
+            	   clearInterval(idx_time);
+            	   break;
+               }
+               $(div_words[i]).css("top", int_top);
+               
+            }
+         }
+         
+         
+         function fn_press(e) {
+            if (e.keyCode == 13) {
+               fn_compare();
+            }
+            
+         }
+         
+         function fn_compare() {
+//             var div_words = document.getElementsByClassName("div_word");
+//             var text_words = document.getElementById("my_text").value;
+   			
+            var div_words = $(".div_word");
+            var text_words = $("#my_text").val();
+   			
+            for (var i = div_words.length - 1; i >= 0; i--) {
+// 	           var str_text = div_words[i].innerHTML;
+               var str_text = $(div_words[i]).html();
+               
+               if (str_text == text_words) {
+//            	  div_words[i].remove();
+					$(div_words[i]).remove();
+                  score ++;
+	               if(score >=2){
+    	        	   alert("니가 이겼다리");
+        	    	   clearInterval(idx_time);
+               		}
+            		break;
+               }
+            }
+//             document.getElementById("my_text").value = "";
+				$("#my_text").val("");
+         }
+         
+      </script>
+   </head>
+   <body>
+      <input id="my_text" type="text" onkeypress="fn_press(event)"/>
+      <a href="javascript:gamestart()">시작</a><br>
+      <div class="div_word" style="top : 50px;">우리나라</div>
+      <div class="div_word" style="top : 50px; left : 70px;" >미국나라</div>
+      <div class="div_word" style="top : 50px; left : 140px;" >중국나라</div>
+      
+   </body>
+</html>

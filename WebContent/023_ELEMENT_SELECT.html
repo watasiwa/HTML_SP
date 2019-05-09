@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<title>Document</title>
+		<script type="text/javascript">
+			function myclick() {
+				var obj = document.getElementsByName("selbox")[0];
+				alert(obj.options[obj.selectedIndex].value);
+				
+				
+			}
+		</script>		
+	</head>
+	<body>
+		<select name="selbox" multiple>
+			<option value="1">111</option>
+			<option value="2" selected>222</option>
+			<option value="3">333</option>
+			
+		</select>
+		
+		
+		
+		
+		
+		<input type="button" value="À¸¾Ó" onclick="myclick()"/>			
+	</body>
+</html>
