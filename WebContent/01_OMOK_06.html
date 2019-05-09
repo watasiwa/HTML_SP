@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<style>
+table, tr, td {
+	border: 0px;
+	padding: 0px;
+	border-collapse: collapse;
+}
+
+img {
+	display: block;
+}
+</style>
+<script type="text/javascript">
+	var arr2D = new Array();
+	var arr2DImg = new Array();
+
+	function init() {
+
+		for (var i = 0; i < 10; i++) {
+			var arrRow = new Array();
+			arrRow.push(0);
+			arrRow.push(0);
+			arrRow.push(0);
+			arrRow.push(0);
+			arrRow.push(0);
+			arrRow.push(0);
+			arrRow.push(0);
+			arrRow.push(0);
+			arrRow.push(0);
+			arrRow.push(0);
+			arr2D.push(arrRow);
+
+		}
+
+		var grids = document.getElementsByClassName("grid");
+
+		for (var i = 0; i < grids.length; i += 10) {
+			var arrRowImg = new Array();
+			arrRowImg.push(grids[i + 0]);
+			arrRowImg.push(grids[i + 1]);
+			arrRowImg.push(grids[i + 2]);
+			arrRowImg.push(grids[i + 3]);
+			arrRowImg.push(grids[i + 4]);
+			arrRowImg.push(grids[i + 5]);
+			arrRowImg.push(grids[i + 6]);
+			arrRowImg.push(grids[i + 7]);
+			arrRowImg.push(grids[i + 8]);
+			arrRowImg.push(grids[i + 9]);
+
+			arr2DImg.push(arrRowImg);
+		}
+
+
+		for (var i = 0; i < arr2D.length; i++) {
+			for (var j = 0; j < arr2D[i].length; j++) {
+				arr2DImg[i][j].alt = "" + i + "," + j + "";
+
+			}
+		}
+
+	}
+	function myDisplay() {
+
+		for (var i = 0; i < arr2D.length; i++) {
+			for (var j = 0; j < arr2D[i].length; j++) {
+				arr2DImg[i][j].src = "01/" + arr2D[i][j] + ".jpg";
+
+			}
+		}
+	}
+	
+	var arr_histo = new Array();
+	var status = 1;
+	
+	function fn_keepMemory() {
+		var text = "";
+		for(var i =0; i < arr2D.length; i++){
+			for(var j = 0; j < arr2D[i].length; j++){
+				text += arr2D[i][j];
+			}
+			
+		}
+		arr_histo.push(text);
+	}
+	
+	function fn_save() {
+		// 아작스 로직
+	}
+	
+	
+	function myclick(obj) {
+		var str_alt = obj.alt;
+		var arr_alt = str_alt.split(",");
+		var i = Number(arr_alt[0]);
+		var j = Number(arr_alt[1]);
+
+		if (arr2D[i][j] != 0) {
+			return;
+		}
+		
+		arr2D[i][j] = status;
+		fn_keepMemory();
+		myDisplay();
+		
+		var cnt_top = fn_top(i, j);
+		var cnt_down = fn_down(i, j);
+
+		var cnt_left = fn_left(i, j);
+		var cnt_right = fn_right(i, j);
+
+		var cnt_topright = fn_topright(i, j);
+		var cnt_downright = fn_downright(i, j);
+
+		var cnt_topleft = fn_topleft(i, j);
+		var cnt_downleft = fn_downleft(i, j);
+		
+		var arr_result = new Array();
+		arr_result.push(cnt_top      + cnt_down      + 1);
+		arr_result.push(cnt_left     + cnt_right     + 1);
+		arr_result.push(cnt_topright + cnt_downright + 1);
+		arr_result.push(cnt_topleft  + cnt_downleft  + 1);
+
+		for (var i = 0; i < arr_result.length; i++) {
+			if (arr_result[i] == 5) {
+				if (status == 1) {
+					fn_save();
+					alert("흑돌이 이겼습니다.");
+				}
+				return;
+			}
+		}
+		
+		if (status == 1) {
+			status = 2;
+		} 
+		
+		var arr_ret = [-1,-1];
+		fn_setStonebyCom(arr_ret);
+		console.log(arr_ret);
+		
+		var ai_i = arr_ret[0];
+		var ai_j = arr_ret[1];
+		
+		arr2D[ai_i][ai_j] = status;
+		fn_keepMemory();
+		myDisplay();
+		
+	
+		var cnt_top = fn_top(ai_i, ai_j);
+		var cnt_down = fn_down(ai_i, ai_j);
+
+		var cnt_left = fn_left(ai_i, ai_j);
+		var cnt_right = fn_right(ai_i, ai_j);
+
+		var cnt_topright = fn_topright(ai_i, ai_j);
+		var cnt_downright = fn_downright(ai_i, ai_j);
+
+		var cnt_topleft = fn_topleft(ai_i, ai_j);
+		var cnt_downleft = fn_downleft(ai_i, ai_j);
+
+		var arr_result = new Array();
+		arr_result.push(cnt_top + cnt_down + 1);
+		arr_result.push(cnt_left + cnt_right + 1);
+		arr_result.push(cnt_topright + cnt_downright + 1);
+		arr_result.push(cnt_topleft + cnt_downleft + 1);
+
+		for (var i = 0; i < arr_result.length; i++) {
+			if (arr_result[i] == 5) {
+				if (status == 2) {
+					fn_save();
+					alert("백돌이 이겼습니다.");
+				}
+				
+				return;
+			}
+		}
+		
+		if(status == 2){
+			status = 1;
+		}
+		
+	}
+
+	function fn_setStonebyCom(arr_ref) {
+		
+		var arr2Dattack = new Array();
+		var arr2Ddefens = new Array();
+		var arr2Dcenter = new Array();
+		var arr2Dsumall = new Array();
+		
+		
+		for (var i = 0; i < arr2D.length; i++) {
+			var arr_row_a = new Array();	
+			var arr_row_d = new Array();
+			var arr_row_c = new Array();
+			var arr_row_s = new Array();
+			for (var j = 0; j < arr2D[i].length; j++) {
+				arr_row_a.push(0);
+				arr_row_d.push(0);
+				arr_row_c.push(0);
+				arr_row_s.push(0);
+			}
+			arr2Dattack.push(arr_row_a);
+			arr2Ddefens.push(arr_row_d);
+			arr2Dcenter.push(arr_row_c);
+			arr2Dsumall.push(arr_row_s);
+		}
+		
+		for (var i = 0; i < arr2D.length; i++) {
+			for (var j = 0; j < arr2D[i].length; j++) {
+				
+				var red = (i *i) + ((i - arr2D.length)*(i - arr2D.length));
+				var black = (arr2D.length)*(arr2D.length) - red;
+				
+				var red_j = (j *j) + ((j - arr2D.length)*(j - arr2D.length));
+				var black_j = (arr2D.length)*(arr2D.length) - red_j;
+				
+				arr2Dcenter[i][j] = (black + black_j) / 100000;
+				
+			}
+		}
+		
+		
+		for (var i = 0; i < arr2D.length; i++) {
+			for (var j = 0; j < arr2D[i].length; j++) {
+				var cnt_top = fn_top(i, j);
+				var cnt_down = fn_down(i, j);
+
+				var cnt_left = fn_left(i, j);
+				var cnt_right = fn_right(i, j);
+
+				var cnt_topright = fn_topright(i, j);
+				var cnt_downright = fn_downright(i, j);
+
+				var cnt_topleft = fn_topleft(i, j);
+				var cnt_downleft = fn_downleft(i, j);
+				
+				var arr_cnt = new Array();
+				
+				arr_cnt.push(cnt_top      + cnt_down + 1);
+				arr_cnt.push(cnt_left     + cnt_right + 1);
+				arr_cnt.push(cnt_topright + cnt_downright + 1);
+				arr_cnt.push(cnt_topleft  + cnt_downleft + 1);
+				
+				var max = getMaxFromArray(arr_cnt);
+				
+				arr2Dattack[i][j] = max*0.8;
+			}
+		}
+		
+		
+		if(status == 1){
+			status = 2;
+		}else if(status == 2){
+			status = 1;
+		}
+		
+		for (var i = 0; i < arr2D.length; i++) {
+			for (var j = 0; j < arr2D[i].length; j++) {
+				var cnt_top = fn_top(i, j);
+				var cnt_down = fn_down(i, j);
+
+				var cnt_left = fn_left(i, j);
+				var cnt_right = fn_right(i, j);
+
+				var cnt_topright = fn_topright(i, j);
+				var cnt_downright = fn_downright(i, j);
+
+				var cnt_topleft = fn_topleft(i, j);
+				var cnt_downleft = fn_downleft(i, j);
+				
+				var arr_cnt = new Array();
+				
+				arr_cnt.push(cnt_top      + cnt_down + 1);
+				arr_cnt.push(cnt_left     + cnt_right + 1);
+				arr_cnt.push(cnt_topright + cnt_downright + 1);
+				arr_cnt.push(cnt_topleft  + cnt_downleft + 1);
+				
+				var max = getMaxFromArray(arr_cnt);
+				
+				arr2Ddefens[i][j] = max;
+			}
+		}
+				
+		if(status == 1){
+			status = 2;
+		}else if(status == 2){
+			status = 1;
+		}
+		
+		
+		
+		
+		// max 가중치 추가 후 max비교? 
+		
+		
+		for (var i = 0; i < arr2D.length; i++) {
+			for (var j = 0; j < arr2D[i].length; j++) {
+				arr2Dsumall[i][j] = arr2Dattack[i][j] + arr2Ddefens[i][j] + arr2Dcenter[i][j];
+			}
+		}
+		
+		
+		for (var i = 0; i < arr2Dsumall.length; i++) {
+			for (var j = 0; j < arr2Dsumall[i].length; j++) {
+				if(arr2D[i][j] > 0){
+					arr2Dsumall[i][j] = -1;
+				}
+			}
+		}		
+		
+		
+		
+		var max_all = 0;
+		
+		for (var i = 0; i < arr2Dsumall.length; i++) {
+			for (var j = 0; j < arr2Dsumall[i].length; j++) {
+				if(max_all < arr2Dsumall[i][j]){
+					max_all = arr2Dsumall[i][j];
+				}
+			}
+		}		
+		
+		console.log("-----------------------");
+		console.log(arr2Dsumall);
+		console.log("-----------------------");
+		
+		
+		
+		for (var i = 0; i < arr2Dsumall.length; i++) {
+			for (var j = 0; j < arr2Dsumall[i].length; j++) {
+
+				if (arr2Dsumall[i][j] == max_all) {
+					arr_ref[0] = i;
+					arr_ref[1] = j;
+					return;
+				}
+				
+			}
+		}
+
+	}
+	
+	function getMaxFromArray(arr_cnt) {
+		
+		var max = 0;
+		for(var k =0; k < arr_cnt.length; k++){
+			if(max < arr_cnt[k]) {
+				max =  arr_cnt[k];
+			 }
+		}
+			return max;
+	}
+
+	function fn_top(i, j) {
+		var ret_cnt = 0;
+
+		while (true) {
+			i = i - 1;
+			j = j;
+
+			try {
+				if (arr2D[i][j] == status) {
+					ret_cnt++;
+
+				} else {
+					return ret_cnt;
+				}
+			} catch (e) {
+
+				return ret_cnt;
+			}
+		}
+	}
+	function fn_down(i, j) {
+		var ret_cnt = 0;
+
+		while (true) {
+			i = i + 1;
+			j = j;
+
+			try {
+				if (arr2D[i][j] == status) {
+					ret_cnt++;
+
+				} else {
+					return ret_cnt;
+				}
+			} catch (e) {
+
+				return ret_cnt;
+			}
+		}
+	}
+
+	function fn_left(i, j) {
+		var ret_cnt = 0;
+
+		while (true) {
+			i = i;
+			j = j - 1;
+
+			try {
+				if (arr2D[i][j] == status) {
+					ret_cnt++;
+
+				} else {
+					return ret_cnt;
+				}
+			} catch (e) {
+
+				return ret_cnt;
+			}
+		}
+	}
+
+	function fn_right(i, j) {
+		var ret_cnt = 0;
+
+		while (true) {
+			i = i;
+			j = j + 1;
+
+			try {
+				if (arr2D[i][j] == status) {
+					ret_cnt++;
+
+				} else {
+					return ret_cnt;
+				}
+			} catch (e) {
+
+				return ret_cnt;
+			}
+		}
+	}
+
+	function fn_topright(i, j) {
+		var ret_cnt = 0;
+
+		while (true) {
+			i = i - 1;
+			j = j + 1;
+
+			try {
+				if (arr2D[i][j] == status) {
+					ret_cnt++;
+
+				} else {
+					return ret_cnt;
+				}
+			} catch (e) {
+
+				return ret_cnt;
+			}
+		}
+	}
+
+	function fn_topleft(i, j) {
+		var ret_cnt = 0;
+
+		while (true) {
+			i = i - 1;
+			j = j - 1;
+
+			try {
+				if (arr2D[i][j] == status) {
+					ret_cnt++;
+
+				} else {
+					return ret_cnt;
+				}
+			} catch (e) {
+
+				return ret_cnt;
+			}
+		}
+
+	}
+
+	function fn_downright(i, j) {
+		var ret_cnt = 0;
+
+		while (true) {
+			i = i + 1;
+			j = j + 1;
+
+			try {
+				if (arr2D[i][j] == status) {
+					ret_cnt++;
+
+				} else {
+					return ret_cnt;
+				}
+			} catch (e) {
+
+				return ret_cnt;
+			}
+		}
+
+	}
+
+	function fn_downleft(i, j) {
+		var ret_cnt = 0;
+
+		while (true) {
+			i = i + 1;
+			j = j - 1;
+
+			try {
+				if (arr2D[i][j] == status) {
+					ret_cnt++;
+
+				} else {
+					return ret_cnt;
+				}
+			} catch (e) {
+
+				return ret_cnt;
+			}
+		}
+
+	}
+</script>
+
+</head>
+<body onload="init()">
+
+	<a href="javascript:myDisplay()">화면보기</a>
+	<table>
+		<tr>
+			<td><img class="grid" src="01/0.jpg" onclick="myclick(this)" /></td>
+			<td><img class="grid" src="01/0.jpg" onclick="myclick(this)" /></td>
+			<td><img class="grid" src="01/0.jpg" onclick="myclick(this)" /></td>
+			<td><img class="grid" src="01/0.jpg" onclick="myclick(this)" /></td>
+			<td><img class="grid" src="01/0.jpg" onclick="myclick(this)" /></td>
+			<td><img class="grid" src="01/0.jpg" onclick="myclick(this)" /></td>
+			<td><img class="grid" src="01/0.jpg" onclick="myclick(this)" /></td>
+			<td><img class="grid" src="01/0.jpg" onclick="myclick(this)" /></td>
+			<td><img class="grid" src="01/0.jpg" onclick="myclick(this)" /></td>
+			<td><img class="grid" src="01/0.jpg" onclick="myclick(this)" /></td>
+		</tr>
+		<tr>
+			<td><img class="grid" src="01/0.jpg" onclick="myclick(this)" /></td>
+			<td><img class="grid" src="01/0.jpg" onclick="myclick(this)" /></td>
+			<td><img class="grid" src="01/0.jpg" onclick="myclick(this)" /></td>
+			<td><img class="grid" src="01/0.jpg" onclick="myclick(this)" /></td>
+			<td><img class="grid" src="01/0.jpg" onclick="myclick(this)" /></td>
+			<td><img class="grid" src="01/0.jpg" onclick="myclick(this)" /></td>
+			<td><img class="grid" src="01/0.jpg" onclick="myclick(this)" /></td>
+			<td><img class="grid" src="01/0.jpg" onclick="myclick(this)" /></td>
+			<td><img class="grid" src="01/0.jpg" onclick="myclick(this)" /></td>
+			<td><img class="grid" src="01/0.jpg" onclick="myclick(this)" /></td>
+		</tr>
+		<tr>
+			<td><img class="grid" src="01/0.jpg" onclick="myclick(this)" /></td>
+			<td><img class="grid" src="01/0.jpg" onclick="myclick(this)" /></td>
+			<td><img class="grid" src="01/0.jpg" onclick="myclick(this)" /></td>
+			<td><img class="grid" src="01/0.jpg" onclick="myclick(this)" /></td>
+			<td><img class="grid" src="01/0.jpg" onclick="myclick(this)" /></td>
+			<td><img class="grid" src="01/0.jpg" onclick="myclick(this)" /></td>
+			<td><img class="grid" src="01/0.jpg" onclick="myclick(this)" /></td>
+			<td><img class="grid" src="01/0.jpg" onclick="myclick(this)" /></td>
+			<td><img class="grid" src="01/0.jpg" onclick="myclick(this)" /></td>
+			<td><img class="grid" src="01/0.jpg" onclick="myclick(this)" /></td>
+		</tr>
+		<tr>
+			<td><img class="grid" src="01/0.jpg" onclick="myclick(this)" /></td>
+			<td><img class="grid" src="01/0.jpg" onclick="myclick(this)" /></td>
+			<td><img class="grid" src="01/0.jpg" onclick="myclick(this)" /></td>
+			<td><img class="grid" src="01/0.jpg" onclick="myclick(this)" /></td>
+			<td><img class="grid" src="01/0.jpg" onclick="myclick(this)" /></td>
+			<td><img class="grid" src="01/0.jpg" onclick="myclick(this)" /></td>
+			<td><img class="grid" src="01/0.jpg" onclick="myclick(this)" /></td>
+			<td><img class="grid" src="01/0.jpg" onclick="myclick(this)" /></td>
+			<td><img class="grid" src="01/0.jpg" onclick="myclick(this)" /></td>
+			<td><img class="grid" src="01/0.jpg" onclick="myclick(this)" /></td>
+		</tr>
+		<tr>
+			<td><img class="grid" src="01/0.jpg" onclick="myclick(this)" /></td>
+			<td><img class="grid" src="01/0.jpg" onclick="myclick(this)" /></td>
+			<td><img class="grid" src="01/0.jpg" onclick="myclick(this)" /></td>
+			<td><img class="grid" src="01/0.jpg" onclick="myclick(this)" /></td>
+			<td><img class="grid" src="01/0.jpg" onclick="myclick(this)" /></td>
+			<td><img class="grid" src="01/0.jpg" onclick="myclick(this)" /></td>
+			<td><img class="grid" src="01/0.jpg" onclick="myclick(this)" /></td>
+			<td><img class="grid" src="01/0.jpg" onclick="myclick(this)" /></td>
+			<td><img class="grid" src="01/0.jpg" onclick="myclick(this)" /></td>
+			<td><img class="grid" src="01/0.jpg" onclick="myclick(this)" /></td>
+		</tr>
+		<tr>
+			<td><img class="grid" src="01/0.jpg" onclick="myclick(this)" /></td>
+			<td><img class="grid" src="01/0.jpg" onclick="myclick(this)" /></td>
+			<td><img class="grid" src="01/0.jpg" onclick="myclick(this)" /></td>
+			<td><img class="grid" src="01/0.jpg" onclick="myclick(this)" /></td>
+			<td><img class="grid" src="01/0.jpg" onclick="myclick(this)" /></td>
+			<td><img class="grid" src="01/0.jpg" onclick="myclick(this)" /></td>
+			<td><img class="grid" src="01/0.jpg" onclick="myclick(this)" /></td>
+			<td><img class="grid" src="01/0.jpg" onclick="myclick(this)" /></td>
+			<td><img class="grid" src="01/0.jpg" onclick="myclick(this)" /></td>
+			<td><img class="grid" src="01/0.jpg" onclick="myclick(this)" /></td>
+		</tr>
+		<tr>
+			<td><img class="grid" src="01/0.jpg" onclick="myclick(this)" /></td>
+			<td><img class="grid" src="01/0.jpg" onclick="myclick(this)" /></td>
+			<td><img class="grid" src="01/0.jpg" onclick="myclick(this)" /></td>
+			<td><img class="grid" src="01/0.jpg" onclick="myclick(this)" /></td>
+			<td><img class="grid" src="01/0.jpg" onclick="myclick(this)" /></td>
+			<td><img class="grid" src="01/0.jpg" onclick="myclick(this)" /></td>
+			<td><img class="grid" src="01/0.jpg" onclick="myclick(this)" /></td>
+			<td><img class="grid" src="01/0.jpg" onclick="myclick(this)" /></td>
+			<td><img class="grid" src="01/0.jpg" onclick="myclick(this)" /></td>
+			<td><img class="grid" src="01/0.jpg" onclick="myclick(this)" /></td>
+		</tr>
+		<tr>
+			<td><img class="grid" src="01/0.jpg" onclick="myclick(this)" /></td>
+			<td><img class="grid" src="01/0.jpg" onclick="myclick(this)" /></td>
+			<td><img class="grid" src="01/0.jpg" onclick="myclick(this)" /></td>
+			<td><img class="grid" src="01/0.jpg" onclick="myclick(this)" /></td>
+			<td><img class="grid" src="01/0.jpg" onclick="myclick(this)" /></td>
+			<td><img class="grid" src="01/0.jpg" onclick="myclick(this)" /></td>
+			<td><img class="grid" src="01/0.jpg" onclick="myclick(this)" /></td>
+			<td><img class="grid" src="01/0.jpg" onclick="myclick(this)" /></td>
+			<td><img class="grid" src="01/0.jpg" onclick="myclick(this)" /></td>
+			<td><img class="grid" src="01/0.jpg" onclick="myclick(this)" /></td>
+		</tr>
+		<tr>
+			<td><img class="grid" src="01/0.jpg" onclick="myclick(this)" /></td>
+			<td><img class="grid" src="01/0.jpg" onclick="myclick(this)" /></td>
+			<td><img class="grid" src="01/0.jpg" onclick="myclick(this)" /></td>
+			<td><img class="grid" src="01/0.jpg" onclick="myclick(this)" /></td>
+			<td><img class="grid" src="01/0.jpg" onclick="myclick(this)" /></td>
+			<td><img class="grid" src="01/0.jpg" onclick="myclick(this)" /></td>
+			<td><img class="grid" src="01/0.jpg" onclick="myclick(this)" /></td>
+			<td><img class="grid" src="01/0.jpg" onclick="myclick(this)" /></td>
+			<td><img class="grid" src="01/0.jpg" onclick="myclick(this)" /></td>
+			<td><img class="grid" src="01/0.jpg" onclick="myclick(this)" /></td>
+		</tr>
+		<tr>
+			<td><img class="grid" src="01/0.jpg" onclick="myclick(this)" /></td>
+			<td><img class="grid" src="01/0.jpg" onclick="myclick(this)" /></td>
+			<td><img class="grid" src="01/0.jpg" onclick="myclick(this)" /></td>
+			<td><img class="grid" src="01/0.jpg" onclick="myclick(this)" /></td>
+			<td><img class="grid" src="01/0.jpg" onclick="myclick(this)" /></td>
+			<td><img class="grid" src="01/0.jpg" onclick="myclick(this)" /></td>
+			<td><img class="grid" src="01/0.jpg" onclick="myclick(this)" /></td>
+			<td><img class="grid" src="01/0.jpg" onclick="myclick(this)" /></td>
+			<td><img class="grid" src="01/0.jpg" onclick="myclick(this)" /></td>
+			<td><img class="grid" src="01/0.jpg" onclick="myclick(this)" /></td>
+		</tr>
+	</table>
+
+</body>
+</html>

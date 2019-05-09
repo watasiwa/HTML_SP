@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script type="text/javascript">
+	function  test() {
+		var arrNew = new Array();
+		arrNew.push("0");
+		arrNew.push("0");
+		
+		
+		var arr = new Array();
+		arr.push("1");
+		arr.push("7");
+		arr.push("3");
+		arr.push("4");
+		arr.push("5");
+		var max = 0;
+		for(var i = 0; i < arr.length; i++){
+			if(max < arr[i]){
+				max = arr[i];
+			}
+		}
+		console.log(max);
+		
+		
+		
+		var arr_con = arr.concat(arr);
+		
+		console.log(arr_con);
+	}
+	
+
+
+</script>
+
+</head>
+<body>
+	<a href="javascript:test()">test</a>
+</body>
+</html>

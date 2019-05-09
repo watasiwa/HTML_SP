@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+	<script>
+		var arr2D_block = new Array();
+		var arr2D_stack = new Array();
+		var arr2D_displ = new Array();
+		var colors = ["gray" , "yellow", "blue", "pink", "red", "orange", "green", "purple"];
+		var canvas;
+		var ctx;
+		window.onload = function() {
+			init_arr();
+			
+			canvas = document.getElementById("canvas");
+			if (canvas == null || canvas.getContext == null) return;
+			ctx = canvas.getContext("2d");
+			draw();
+		}
+		function init_arr(){
+			
+			for(var i = 0; i< 20;   i++){
+				var row_block = new Array();
+				var row_stack = new Array();
+				var row_displ = new Array();
+				for(var j = 0; j< 10;   j++){
+				row_block.push(0);
+				row_stack.push(0);
+				row_displ.push(0);
+			}
+			arr2D_block.push(row_block);			
+			arr2D_stack.push(row_stack);			
+			arr2D_displ.push(row_displ);			
+			
+		}
+			arr2D_stack[19][0] = 2;	
+			arr2D_stack[19][1] = 2;	
+			arr2D_stack[19][2] = 2;	
+			arr2D_stack[19][3] = 2;	
+			arr2D_stack[19][4] = 2;	
+			arr2D_stack[19][5] = 2;	
+			arr2D_stack[19][6] = 2;	
+			arr2D_stack[19][7] = 2;	
+
+			console.log(arr2D_block);
+			console.log(arr2D_stack);
+			console.log(arr2D_displ);
+				
+	}	
+		
+		var block_type   = 4; // 블럭타입 7개
+		var block_status = 1; // 블럭 상태 
+		var block_i      = 0; // 블럭위치 i자리
+		var block_j      = 4; // 블럭위치 j자리
+		
+		
+		function draw() {
+			
+			for(var i =0; i < 20; i++){
+				for(var j = 0; j < 10; j++){
+					var index_color = arr2D_displ[i][j];
+					ctx.fillStyle = colors[index_color];
+					ctx.fillRect(20*j , i*20,19 ,19);
+				}				
+			}
+			
+			
+		}
+		
+		function fn_keyboard(e) {
+			var keycode = e.keyCode;
+			
+			if(keycode == 40){
+				block_i ++;
+			}
+			if(keycode == 37){
+				block_j --;
+			}
+			if(keycode == 39){
+				block_j ++;
+			}
+			if(keycode == 38){
+				changeStatus();
+			}
+			
+			setBlock();
+			setDispl();
+			
+			draw();
+			
+// 			스페이스 32
+
+		}
+		
+		function changeStatus() {
+			
+			if(block_type == 2 || block_type == 3 || block_type == 4){
+				if(block_status == 1){
+					block_status = 2;
+				}else if(block_status == 2){
+					block_status = 1;
+				}
+			}
+			if(block_type == 5 || block_type == 6 || block_type == 7){
+				if(block_status == 1){
+					block_status = 2;
+				}
+				else if(block_status == 2){
+					block_status = 3;
+				}
+				else if(block_status == 3){
+					block_status = 4;
+				}
+				else if(block_status == 4){
+					block_status = 1;
+				}
+			}
+		}
+		
+		
+		function setBlock() {
+			
+			setZero(arr2D_block);
+			
+			if(block_type == 1){ //ㅁ
+				arr2D_block[block_i	 ][block_j	] = block_type;
+				arr2D_block[block_i+1][block_j	] = block_type;
+				arr2D_block[block_i	 ][block_j+1] = block_type;
+				arr2D_block[block_i+1][block_j+1] = block_type;
+			}
+				
+			if(block_type == 2){ // ㅡ 
+				
+				if(block_status == 1){  // 세워져있는 모습
+					arr2D_block[block_i-2][block_j	] = block_type;
+					arr2D_block[block_i-1][block_j	] = block_type;
+					arr2D_block[block_i+1][block_j  ] = block_type;
+					arr2D_block[block_i  ][block_j  ] = block_type;
+					
+					
+					
+				}
+				if(block_status == 2){
+					arr2D_block[block_i][block_j-2	] = block_type;
+					arr2D_block[block_i][block_j-1	] = block_type;
+					arr2D_block[block_i][block_j+1  ] = block_type;
+					arr2D_block[block_i][block_j    ] = block_type;
+						
+				}
+			}
+			
+			if(block_type == 3){ // 
+				if(block_status == 1){  // 세워져있는 모습
+					arr2D_block[block_i-1][block_j	] = block_type;
+					arr2D_block[block_i  ][block_j+1] = block_type;
+					arr2D_block[block_i  ][block_j  ] = block_type;
+					arr2D_block[block_i+1][block_j+1] = block_type;
+					
+					
+					
+				}
+				if(block_status == 2){
+					arr2D_block[block_i+1][block_j	] = block_type;
+					arr2D_block[block_i+1][block_j-1] = block_type;
+					arr2D_block[block_i][block_j+1  ] = block_type;
+					arr2D_block[block_i][block_j    ] = block_type;
+						
+				}
+			}
+			if(block_type == 4){   //
+				if(block_status == 1){  // 세워져있는 모습
+					arr2D_block[block_i-1][block_j+1] = block_type;
+					arr2D_block[block_i  ][block_j+1] = block_type;
+					arr2D_block[block_i  ][block_j  ] = block_type;
+					arr2D_block[block_i+1][block_j  ] = block_type;
+					
+					
+					
+				}
+				if(block_status == 2){
+					arr2D_block[block_i+1][block_j	  ] = block_type;
+					arr2D_block[block_i  ][block_j-1  ] = block_type;
+					arr2D_block[block_i+1][block_j+1  ] = block_type;
+					arr2D_block[block_i  ][block_j    ] = block_type;
+						
+				}
+			}
+			
+			if(block_type == 5){ // ㅗ
+				if(block_status == 1){  // 세워져있는 모습
+					arr2D_block[block_i-1][block_j	] = block_type;
+					arr2D_block[block_i  ][block_j+1] = block_type;
+					arr2D_block[block_i  ][block_j  ] = block_type;
+					arr2D_block[block_i  ][block_j-1] = block_type;
+					
+					
+					
+				}
+				if(block_status == 2){
+					arr2D_block[block_i+1][block_j	] = block_type;
+					arr2D_block[block_i-1][block_j  ] = block_type;
+					arr2D_block[block_i  ][block_j+1] = block_type;
+					arr2D_block[block_i  ][block_j  ] = block_type;
+						
+				}
+				if(block_status == 3){  //누운모습
+					arr2D_block[block_i  ][block_j+1] = block_type;
+					arr2D_block[block_i  ][block_j-1] = block_type;
+					arr2D_block[block_i+1][block_j	] = block_type;
+					arr2D_block[block_i  ][block_j  ] = block_type;
+					
+					
+					
+				}
+				if(block_status == 4){
+					arr2D_block[block_i-1][block_j	] = block_type;
+					arr2D_block[block_i+1][block_j  ] = block_type;
+					arr2D_block[block_i  ][block_j-1] = block_type;
+					arr2D_block[block_i  ][block_j  ] = block_type;
+						
+				}
+			}
+			if(block_type == 6){
+				if(block_status == 1){  // 세워져있는 모습
+					arr2D_block[block_i+1][block_j	] = block_type;
+					arr2D_block[block_i-1][block_j+1] = block_type;
+					arr2D_block[block_i  ][block_j  ] = block_type;
+					arr2D_block[block_i-1][block_j  ] = block_type;
+					
+				}
+				if(block_status == 2){
+					arr2D_block[block_i+1][block_j+1] = block_type;
+					arr2D_block[block_i  ][block_j-1] = block_type;
+					arr2D_block[block_i  ][block_j+1] = block_type;
+					arr2D_block[block_i  ][block_j  ] = block_type;
+						
+				}
+				if(block_status == 3){ // 누운모습
+					arr2D_block[block_i+1][block_j-1] = block_type;
+					arr2D_block[block_i+1][block_j  ] = block_type;
+					arr2D_block[block_i-1][block_j	] = block_type;
+					arr2D_block[block_i  ][block_j  ] = block_type;
+					
+				}
+				if(block_status == 4){
+					arr2D_block[block_i-1][block_j-1] = block_type;
+					arr2D_block[block_i  ][block_j-1] = block_type;
+					arr2D_block[block_i  ][block_j+1] = block_type;
+					arr2D_block[block_i  ][block_j  ] = block_type;
+						
+				}
+			}
+			if(block_type == 7){
+				if(block_status == 1){  // 세워져있는 모습
+					arr2D_block[block_i+1][block_j	] = block_type;
+					arr2D_block[block_i-1][block_j  ] = block_type;
+					arr2D_block[block_i  ][block_j  ] = block_type;
+					arr2D_block[block_i-1][block_j-1] = block_type;
+					
+				}
+				if(block_status == 2){
+					arr2D_block[block_i  ][block_j	] = block_type;
+					arr2D_block[block_i-1][block_j+1] = block_type;
+					arr2D_block[block_i  ][block_j+1] = block_type;
+					arr2D_block[block_i  ][block_j-1] = block_type;
+						
+				}
+				if(block_status == 3){ // 누운모습
+					arr2D_block[block_i+1][block_j+1] = block_type;
+					arr2D_block[block_i+1][block_j  ] = block_type;
+					arr2D_block[block_i-1][block_j	] = block_type;
+					arr2D_block[block_i  ][block_j  ] = block_type;
+					
+				}
+				if(block_status == 4){
+					arr2D_block[block_i+1][block_j-1] = block_type;
+					arr2D_block[block_i  ][block_j-1] = block_type;
+					arr2D_block[block_i  ][block_j+1] = block_type;
+					arr2D_block[block_i  ][block_j  ] = block_type;
+						
+				}
+			}
+
+		}
+		
+		
+		function setDispl() {
+			setZero(arr2D_displ);
+			for (var i = 0; i < arr2D_displ.length; i++) {
+				for (var j = 0; j < arr2D_displ[i].length; j++) {
+
+					arr2D_displ[i][j] = arr2D_block[i][j];
+
+					if (arr2D_block[i][j] > 0) {
+						arr2D_displ[i][j] = arr2D_block[i][j];
+					}
+					if (arr2D_stack[i][j] > 0) {
+						arr2D_displ[i][j] = arr2D_stack[i][j];
+					}
+			
+				}
+
+			}
+		}
+
+		function setZero(arr2D) {
+			for (var i = 0; i < arr2D.length; i++) {
+				for (var j = 0; j < arr2D[i].length; j++) {
+					arr2D[i][j] = 0;
+				}
+			}
+		}
+	</script>
+
+</head>
+<body onkeydown="fn_keyboard(event)">
+	<canvas id="canvas" width="400" height="700">
+		이 브라우저는 캔버스를 지원하지 않습니다.
+	</canvas>
+	
+	
+	
+</body>
+</html>
