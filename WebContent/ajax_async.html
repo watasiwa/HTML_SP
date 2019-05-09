@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script src="jquery-1.12.4.js"></script>
+<script type="text/javascript">
+
+	function fn_ajax() {
+		alert("good1");
+		$.ajax({
+	
+			type : "get",
+			url : "myasync",
+			
+			data : { historys: "",
+					 winner : ""},
+			dataType : "json",
+	
+			success : function(data) {
+				console.log(data.message);
+				alert("good2");
+			},
+			
+			error : function(xhr, status, error) {
+				console.log("에러!: " + error);
+	
+				},
+			});	
+			alert("good3");
+	
+	}
+	
+
+
+
+
+
+</script>
+</head>
+<body>
+	<a href="javascript:fn_ajax()">hihi</a>
+</body>
+</html>

@@ -14,6 +14,7 @@ img {
 	display: block;
 }
 </style>
+<script src="jquery-1.12.4.js"></script>
 <script type="text/javascript">
 	var arr2D = new Array();
 	var arr2DImg = new Array();
@@ -35,7 +36,6 @@ img {
 			arr2D.push(arrRow);
 
 		}
-		console.log(arr2D);
 
 		var grids = document.getElementsByClassName("grid");
 
@@ -55,7 +55,6 @@ img {
 			arr2DImg.push(arrRowImg);
 		}
 
-		console.log(arr2DImg);
 
 		for (var i = 0; i < arr2D.length; i++) {
 			for (var j = 0; j < arr2D[i].length; j++) {
@@ -74,9 +73,59 @@ img {
 			}
 		}
 	}
-
+	
+	var arr_histo = new Array();
 	var status = 1;
+	
+	function fn_keepMemory() {
+		var text = "";
+		for(var i =0; i < arr2D.length; i++){
+			for(var j = 0; j < arr2D[i].length; j++){
+				text += arr2D[i][j];
+			}
+			
+		}
+		arr_histo.push(text);
+	}
+	
+	function fn_save() {
+		// 아작스 로직
+		var historys = "";
+		var winner   = "";
+		
+		historys = arr_histo + "";
+		winner   = status;
+		
+		console.log("historys : "+historys)
+		console.log("winner : "+winner)
+		
+		
+		$.ajax({
 
+			type : "post",
+			url : "myomok",
+			data : { historys: historys,
+					 winner : winner},
+			dataType : "json",
+
+			success : function(data) {
+				console.log("--------------------------------------")
+				console.log(data.message);
+				console.log("--------------------------------------")
+
+			},
+			
+			error : function(xhr, status, error) {
+				console.log("에러!: " + error);
+
+				},
+			});	
+		
+		
+		
+	}
+	
+	
 	function myclick(obj) {
 		var str_alt = obj.alt;
 		var arr_alt = str_alt.split(",");
@@ -86,10 +135,11 @@ img {
 		if (arr2D[i][j] != 0) {
 			return;
 		}
-
+		
 		arr2D[i][j] = status;
+		fn_keepMemory();
 		myDisplay();
-
+		
 		var cnt_top = fn_top(i, j);
 		var cnt_down = fn_down(i, j);
 
@@ -103,17 +153,19 @@ img {
 		var cnt_downleft = fn_downleft(i, j);
 		
 		var arr_result = new Array();
-		arr_result.push(cnt_top + cnt_down + 1);
-		arr_result.push(cnt_left + cnt_right + 1);
+		arr_result.push(cnt_top      + cnt_down      + 1);
+		arr_result.push(cnt_left     + cnt_right     + 1);
 		arr_result.push(cnt_topright + cnt_downright + 1);
-		arr_result.push(cnt_topleft + cnt_downleft + 1);
+		arr_result.push(cnt_topleft  + cnt_downleft  + 1);
 
 		for (var i = 0; i < arr_result.length; i++) {
 			if (arr_result[i] == 5) {
 				if (status == 1) {
+					fn_save();
 					alert("흑돌이 이겼습니다.");
 				}
 				
+				status = 0;
 				return;
 			}
 		}
@@ -124,12 +176,12 @@ img {
 		
 		var arr_ret = [-1,-1];
 		fn_setStonebyCom(arr_ret);
-		console.log(arr_ret);
 		
 		var ai_i = arr_ret[0];
 		var ai_j = arr_ret[1];
 		
 		arr2D[ai_i][ai_j] = status;
+		fn_keepMemory();
 		myDisplay();
 		
 	
@@ -154,9 +206,10 @@ img {
 		for (var i = 0; i < arr_result.length; i++) {
 			if (arr_result[i] == 5) {
 				if (status == 2) {
+					fn_save();
 					alert("백돌이 이겼습니다.");
 				}
-				
+				status = 0;
 				return;
 			}
 		}
@@ -167,30 +220,81 @@ img {
 		
 	}
 
+		var arr2Dmemory;
 	function fn_setStonebyCom(arr_ref) {
+		
+		var history = "";
+		for(var i =0; i < arr2D.length; i++){
+			for(var j =0; j < arr2D[i].length; j++){
+			history += arr2D[i][j];
+		}
+		
 		
 		var arr2Dattack = new Array();
 		var arr2Ddefens = new Array();
 		var arr2Dcenter = new Array();
 		var arr2Dsumall = new Array();
-		
+		var arr2Dmemory = new Array();
 		
 		for (var i = 0; i < arr2D.length; i++) {
 			var arr_row_a = new Array();	
 			var arr_row_d = new Array();
 			var arr_row_c = new Array();
 			var arr_row_s = new Array();
+			var arr_row_m = new Array();
 			for (var j = 0; j < arr2D[i].length; j++) {
 				arr_row_a.push(0);
 				arr_row_d.push(0);
 				arr_row_c.push(0);
 				arr_row_s.push(0);
+				arr_row_m.push(0);
 			}
 			arr2Dattack.push(arr_row_a);
 			arr2Ddefens.push(arr_row_d);
 			arr2Dcenter.push(arr_row_c);
 			arr2Dsumall.push(arr_row_s);
+			arr2Dmemory.push(arr_row_m);
 		}
+		
+		
+		
+		$.ajax({
+	
+			type : "get",
+			url : "myasync",
+			data : { history: history,
+					 status : status},
+			dataType : "json",
+			async : false,
+	
+			success : function(data) {
+				console.log("----------------------------------");
+				console.log(data);
+				console.log("----------------------------------");
+				
+				for(var i = 0; i < data.length; i++){
+					var ii = parseInt(data[i].i);
+					var jj = parseInt(data[i].j);
+					
+					if(data[i].status == status){
+						arr2Dmemory[ii][jj] += 0.1;
+					}else {
+						arr2Dmemory[ii][jj] -= 0.1;
+					}
+					
+				}
+				console.log("=======================================");
+				console.log(arr2Dmemory);				
+				console.log("=======================================");
+				
+			},
+			
+			error : function(xhr, status, error) {
+				console.log("에러!: " + error);
+	
+				},
+			});	
+	
 		
 		for (var i = 0; i < arr2D.length; i++) {
 			for (var j = 0; j < arr2D[i].length; j++) {
@@ -282,7 +386,7 @@ img {
 		
 		for (var i = 0; i < arr2D.length; i++) {
 			for (var j = 0; j < arr2D[i].length; j++) {
-				arr2Dsumall[i][j] = arr2Dattack[i][j] + arr2Ddefens[i][j] + arr2Dcenter[i][j];
+				arr2Dsumall[i][j] = arr2Dattack[i][j] + arr2Ddefens[i][j] + arr2Dcenter[i][j] + arr2Dmemory[i][j];
 			}
 		}
 		
@@ -365,7 +469,7 @@ img {
 			i = i + 1;
 			j = j;
 
-			try {
+			try {2
 				if (arr2D[i][j] == status) {
 					ret_cnt++;
 

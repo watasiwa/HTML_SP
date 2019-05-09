@@ -14,6 +14,7 @@ img {
 	display: block;
 }
 </style>
+<script src="jquery-1.12.4.js"></script>
 <script type="text/javascript">
 	var arr2D = new Array();
 	var arr2DImg = new Array();
@@ -85,10 +86,41 @@ img {
 			
 		}
 		arr_histo.push(text);
-	}
+	}2
 	
 	function fn_save() {
 		// 아작스 로직
+		var historys = "";
+		var winner   = "";
+		
+		historys = arr_histo + "";
+		winner   = status;
+		
+		console.log("historys : "+historys)
+		console.log("winner : "+winner)
+		
+		
+		$.ajax({
+
+			type : "post",
+			url : "myomok",
+			data : { historys: historys,
+					 winner : winner},
+			dataType : "json",
+
+			success : function(data) {
+				console.log(data.message);
+				alert("정상적으로 입력되었습니다.");
+			},
+			
+			error : function(xhr, status, error) {
+				console.log("에러!: " + error);
+
+				},
+			});	
+		
+		
+		
 	}
 	
 	

@@ -83,5 +83,8 @@ buildNumber.properties
 .mvn/timing.properties
 .mvn/wrapper/maven-wrapper.jar
 
+patago/SqlMapConfig.properties
+
+
 # End of https://www.gitignore.io/api/maven,eclipse
 /build/
